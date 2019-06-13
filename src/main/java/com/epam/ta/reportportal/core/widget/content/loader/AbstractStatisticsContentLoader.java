@@ -72,7 +72,7 @@ public abstract class AbstractStatisticsContentLoader {
 			String contentField) {
 		final Function<ChartStatisticsContent, String> chartObjectToDate = chartObject -> new DateTime(chartObject.getStartTime().getTime())
 				.toString(DATE_PATTERN);
-		final BinaryOperator<ChartStatisticsContent> chartObjectReducer = (o1, o2) -> Integer.valueOf(o1.getValues().get(contentField)) > Integer.valueOf(o2.getValues().get(contentField)) ?
+		final BinaryOperator<ChartStatisticsContent> chartObjectReducer = (o1, o2) -> Integer.parseInt(o1.getValues().get(contentField)) > Integer.parseInt(o2.getValues().get(contentField)) ?
 				o1 :
 				o2;
 		final Map<String, Optional<ChartStatisticsContent>> groupByDate = statisticsContents.stream()

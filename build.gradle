@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.0.RELEASE'
+        springBootVersion = '2.1.5.RELEASE'
         springCloudVersion = 'Finchley.M9'
     }
     repositories {
@@ -14,31 +14,28 @@ buildscript {
 
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-//        classpath 'com.bmuschko:gradle-docker-plugin:3.0.12'
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0"
     }
 }
 
-
 plugins {
-    id 'net.researchgate.release' version '2.4.1'
+    id "com.github.spotbugs" version "2.0.0"
+    id "io.spring.dependency-management" version "1.0.7.RELEASE"
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'net.researchgate.release' version '2.8.0'
     id "com.jfrog.bintray" version "1.7"
 }
 
 apply plugin: 'java'
-apply plugin: "org.springframework.boot"
-apply plugin: "io.spring.dependency-management"
 apply plugin: 'jacoco'
 
-apply from: 'build-quality.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-docker.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-info.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-commons.gradle'
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 project.ext {
     limits = [
@@ -70,7 +67,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "com.github.reportportal:commons-bom:8706fef"
+        mavenBom "com.github.reportportal:commons-bom:0768166"
     }
 }
 
@@ -94,97 +91,97 @@ configurations {
 dependencies {
     if (releaseMode) {
         //compile 'com.epam.reportportal:commons-dao:4.0.0'
-        compile 'com.epam.reportportal:commons-rules:4.0.0'
-        compile 'com.epam.reportportal:commons-model:4.0.0'
-        compile 'com.epam.reportportal:commons:3.1.0'
+        implementation 'com.epam.reportportal:commons-rules:4.0.0'
+        implementation 'com.epam.reportportal:commons-model:4.0.0'
+        implementation 'com.epam.reportportal:commons:3.1.0'
     } else {
-        compile 'com.github.reportportal:commons-dao:9d48bcb7'
-        compile 'com.github.reportportal:commons-rules:5f5751'
-        compile 'com.github.reportportal:commons-model:5aef134b'
-        compile('com.github.reportportal:commons:71d4aca')
-        compile('com.github.reportportal:plugin-api:30f47d49')
+        implementation 'com.github.reportportal:commons-dao:9d48bcb7'
+        implementation 'com.github.reportportal:commons-rules:5f5751'
+        implementation 'com.github.reportportal:commons-model:5aef134b'
+        implementation('com.github.reportportal:commons:71d4aca')
+        implementation('com.github.reportportal:plugin-api:30f47d49')
     }
 
     //saucelabs
 
-    compile 'com.saucelabs:saucerest:1.0.40'
+    implementation 'com.saucelabs:saucerest:1.0.40'
 
     //move this to the plugin-api
-    compile('com.atlassian.fugue:fugue:2.6.1')
-    compile('com.atlassian.jira:jira-rest-java-client-core:4.0.0')
+    implementation('com.atlassian.fugue:fugue:2.6.1')
+    implementation('com.atlassian.jira:jira-rest-java-client-core:4.0.0')
     //*****************************
 
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 
 
-    compile 'org.apache.commons:commons-lang3:3.7'
+    implementation 'org.apache.commons:commons-lang3:3.7'
 
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'javax.persistence:javax.persistence-api:2.2'
-    compile 'org.hibernate:hibernate-validator'
-    compile 'org.postgresql:postgresql'
-    compile 'org.jooq:jooq:3.11.4'
-    compile 'org.jooq:jooq-codegen:3.11.4'
-    compile 'org.jooq:jooq-meta:3.11.4'
-    compile 'org.jasypt:jasypt:1.9.2'
-    compile("org.springframework.boot:spring-boot-starter-amqp")
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.hibernate:hibernate-validator'
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.jooq:jooq:3.11.4'
+    implementation 'org.jooq:jooq-codegen:3.11.4'
+    implementation 'org.jooq:jooq-meta:3.11.4'
+    implementation 'org.jasypt:jasypt:1.9.2'
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
     // Optional for spring-boot-starter-amqp
-    compile "com.rabbitmq:http-client:2.1.0.RELEASE"
+    implementation "com.rabbitmq:http-client:2.1.0.RELEASE"
 
-    compile 'commons-fileupload:commons-fileupload:1.3.3'
-    compile 'commons-validator:commons-validator:1.6'
-    compile 'org.slf4j:slf4j-api:1.7.24'
+    implementation 'commons-fileupload:commons-fileupload:1.3.3'
+    implementation 'commons-validator:commons-validator:1.6'
+    implementation 'org.slf4j:slf4j-api:1.7.24'
 
 //    seaweedfs
-    compile 'org.lokra.seaweedfs:seaweedfs-client:0.7.3.RELEASE'
+    implementation 'org.lokra.seaweedfs:seaweedfs-client:0.7.3.RELEASE'
 //    end of seaweedfs
 
-    compile "ch.qos.logback:logback-classic"
-    compile 'net.coobird:thumbnailator:0.4.8'
-    compile 'com.sun.mail:javax.mail'
-    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.9'
-    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.8.9'
+    implementation "ch.qos.logback:logback-classic"
+    implementation 'net.coobird:thumbnailator:0.4.8'
+    implementation 'com.sun.mail:javax.mail'
+    implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.9'
+    implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.8.9'
 
 //    compile 'org.springframework.cloud:spring-cloud-config-client'
-    compile 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework.retry:spring-retry'
 
 //    compile 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
-    compile 'org.springframework.boot:spring-boot-starter-aop'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-freemarker'
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 ///// Security
-    compile 'org.springframework.cloud:spring-cloud-starter-security'
-    compile 'org.springframework.cloud:spring-cloud-starter-oauth2'
-    compile 'org.springframework.security:spring-security-oauth2-client'
-    compile 'org.springframework.security:spring-security-jwt'
-    compile 'org.springframework.security:spring-security-acl'
-    compile 'com.github.ben-manes.caffeine:caffeine:2.6.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-security'
+    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.security:spring-security-jwt'
+    implementation 'org.springframework.security:spring-security-acl'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.6.2'
 
 ///// end of Security
 
-    compile 'org.apache.tika:tika-core'
-    compile 'org.apache.tika:tika-parsers'
+    implementation 'org.apache.tika:tika-core'
+    implementation 'org.apache.tika:tika-parsers'
 
-    compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.7.0'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.7.0'
 
     //JasperReport's export to XLS uses Apache POI. Reports 6.3.1 needs version NOT
     //higher than 3.14 since 3.15 contains breaking API changes
-    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
 
-    compile 'javax.inject:javax.inject:1'
-    compile 'com.google.code.findbugs:annotations:3.0.1'
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'com.github.spotbugs:spotbugs-annotations:3.1.12'
 
-    compile 'io.springfox:springfox-swagger-ui'
-    compile 'io.springfox:springfox-swagger2'
+    implementation 'io.springfox:springfox-swagger-ui'
+    implementation 'io.springfox:springfox-swagger2'
 
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
-    compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+    implementation group: 'com.google.guava', name: 'guava', version: '25.1-jre'
 
     api 'org.jacoco:org.jacoco.agent:0.8.3'
 
-    compile "com.querydsl:querydsl-jpa:4.2.1"
+    implementation "com.querydsl:querydsl-jpa:4.2.1"
 
 //  Tests
     testCompile 'com.github.reportportal:agent-java-junit5:c6e131bdb2'
@@ -201,8 +198,8 @@ dependencies {
 }
 
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '5.4.1'
 }
 
 /*
@@ -357,5 +354,16 @@ test {
     if (System.env.TRAVIS == 'true') {
         minHeapSize = "128m"
         maxHeapSize = "1g"
+    }
+}
+
+spotbugs {
+    sourceSets = [sourceSets.main]
+    reportLevel = "high"
+}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled false
+        html.enabled true
     }
 }

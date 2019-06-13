@@ -1,6 +1,8 @@
-FROM openjdk:8-jdk-alpine as builder
+FROM openjdk:11-jdk as builder
 
-RUN apk add --no-cache ca-certificates git curl font-noto
+RUN apt-get update && apt-get install -y ca-certificates git curl fonts-noto && \
+    rm -rf /var/lib/apt/lists/*
+
 
 RUN addgroup -S -g 1000 rp-builder
 RUN adduser -D -S -G rp-builder -u 1000 -s /bin/ash rp-builder
@@ -22,7 +24,7 @@ RUN mkdir -p /home/rp-builder/plugins
 RUN curl -o /home/rp-builder/plugins/JIRA.jar https://jitpack.io/com/github/reportportal/plugin-bts-jira/master/plugin-bts-jira-master.jar
 RUN curl -o /home/rp-builder/plugins/RALLY.jar https://jitpack.io/com/github/reportportal/plugin-bts-rally/master/plugin-bts-rally-master.jar
 
-FROM openjdk:8-jre-slim
+FROM openjdk:11-slim
 
 LABEL maintainer="Andrei Varabyeu <andrei_varabyeu@epam.com>"
 LABEL version="@version@"
