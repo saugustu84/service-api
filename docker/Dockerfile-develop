@@ -4,14 +4,13 @@ RUN apt-get update && apt-get install -y ca-certificates git curl fonts-noto && 
     rm -rf /var/lib/apt/lists/*
 
 
-RUN addgroup -S -g 1000 rp-builder
-RUN adduser -D -S -G rp-builder -u 1000 -s /bin/ash rp-builder
+RUN adduser --system --group -u 1000 rp-builder
 
 WORKDIR /home/rp-builder
 
 COPY gradle/ ./gradle
 COPY gradlew .
-COPY build-quality.gradle build.gradle gradlew settings.gradle gradle.properties ./
+COPY build.gradle gradlew settings.gradle gradle.properties ./
 COPY . ./
 
 RUN chown -R rp-builder:rp-builder ./
