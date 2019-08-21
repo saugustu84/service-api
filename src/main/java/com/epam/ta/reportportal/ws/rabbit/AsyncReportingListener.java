@@ -31,6 +31,7 @@ import com.epam.ta.reportportal.dao.LaunchRepository;
 import com.epam.ta.reportportal.dao.LogRepository;
 import com.epam.ta.reportportal.dao.TestItemRepository;
 import com.epam.ta.reportportal.entity.attachment.Attachment;
+import com.epam.ta.reportportal.entity.enums.StatusEnum;
 import com.epam.ta.reportportal.entity.item.TestItem;
 import com.epam.ta.reportportal.entity.launch.Launch;
 import com.epam.ta.reportportal.entity.log.Log;
@@ -190,6 +191,10 @@ public class AsyncReportingListener implements MessageListener {
 	}
 
 	public void onFinishLaunch(FinishExecutionRQ rq, String username, String projectName, String launchId, String baseUrl) {
+		Optional<Launch> launch = launchRepository.findByUuid(launchId);
+		launch.ifPresent(l -> {LOGGER.info("FINISHLAUNCH TOTAL launchId={} itemCount={}", launch.get().getId(), testItemRepository.countByLaunch(l.getId()));});
+		launch.ifPresent(l -> {LOGGER.info("FINISHLAUNCH INPROGRESS launchId={} itemCount={}", launch.get().getId(), testItemRepository.countByLaunchAndStatus(l.getId(), StatusEnum.IN_PROGRESS));});
+		LOGGER.info("");
 		ReportPortalUser user = (ReportPortalUser) userDetailsService.loadUserByUsername(username);
 		finishLaunchHandler.finishLaunch(launchId, rq, ProjectExtractor.extractProjectDetails(user, projectName), user, baseUrl);
 	}
