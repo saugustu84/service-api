@@ -5,16 +5,7 @@ dist: trusty
 before_install:
   - sudo apt-get install -y fonts-noto
 
-jobs:
-  include:
-    - stage: prepare
-      script: ./gradlew clean wrapper resolveDependencies assemble
-    - stage: test
-      script: ./gradlew test --full-stacktrace
-    - stage: build
-      script: ./gradlew build
-    - stage: build image
-      script: ./gradlew buildDocker
+script: ./gradew buildDocker
 
 env:
   global:
