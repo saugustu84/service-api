@@ -32,10 +32,11 @@ plugins {
     id 'org.springframework.boot' version '2.2.1.RELEASE'
     id 'java'
     id "org.owasp.dependencycheck" version "5.2.0"
+    id 'com.bmuschko.docker-remote-api' version '6.0.0'
 }
 
 apply from: 'project-properties.gradle'
-apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-docker.gradle'
+//apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-docker.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-commons.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-info.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/release-service.gradle'
@@ -118,14 +119,9 @@ dependencyCheck {
 }
 
 bootJar {
-    if (!releaseMode) {
-        getArchiveFileName().set("${getArchiveBaseName().get()}.${getArchiveExtension().get()}")
-    }
+    releaseMode ? archiveClassifier.set('exec') : archiveFileName.set("${getArchiveBaseName().get()}.${getArchiveExtension().get()}")
 }
-
-jar {
-    enabled = true
-}
+jar.enabled(true)
 
 test {
     useJUnitPlatform()
@@ -139,13 +135,41 @@ test {
     }
 }
 
+def isRelease = project.hasProperty("registryRelease")
+def devPostfix = isRelease ? "" : "-dev-5"
+def imageVersion = isRelease ? "$version" : "latest"
+def dockerProjectName = "reportportal$devPostfix/${project.name}".toLowerCase()
+
+task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+    dependsOn build
+    def artifact = String.format('%s.jar', project.name)
+    destFile.set(file("${project.buildDir}${File.separator}${libsDirName}${File.separator}Dockerfile"))
+
+    from('openjdk:8-jre-alpine')
+    label(['version': "$project.version", 'description': "$project.description", 'maintainer': 'Andrei Varabyeu <andrei_varabyeu@epam.com>'])
+    runCommand('apk add --no-cache ca-certificates fontconfig freetype font-noto')
+    environmentVariable(['JAVA_OPTS': '-DLOG_FILE=app.log -Xmx2g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Djava.security.egd=file:/dev/./urandom -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', 'ARTIFACT': artifact])
+    volume('/tmp')
+    addFile(artifact, artifact)
+    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
+            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    exposePort(8080)
+    entryPoint('/start.sh')
+}
+
+task buildDocker(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    dependsOn createDockerfile
+    inputDir.set(file("${project.buildDir}${File.separator}${libsDirName}"))
+    images.add("${dockerProjectName}:$imageVersion")
+}
+
 jar.dependsOn gitInfo
 processResources.dependsOn gitInfo
-prepareDockerfile.dependsOn build
-buildDocker.dependsOn prepareDockerfile
-addDockerfileToGit.dependsOn releaseDockerfile
-updateVersion.dependsOn removeDockerfileFromGit
-beforeReleaseBuild.dependsOn addDockerfileToGit
+//prepareDockerfile.dependsOn build
+//buildDocker.dependsOn prepareDockerfile
+//addDockerfileToGit.dependsOn releaseDockerfile
+//updateVersion.dependsOn removeDockerfileFromGit
+//beforeReleaseBuild.dependsOn addDockerfileToGit
 afterReleaseBuild.dependsOn bintrayUpload
 checkCommitNeeded.dependsOn removeScripts
 test.dependsOn copyTestDatabaseScripts
