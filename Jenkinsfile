@@ -21,7 +21,7 @@ node {
     }
     stage('Deploy Container') {
         docker.withServer("$DOCKER_HOST") {
-            sh 'echo "типа деплоим"'
+            sh "echo 'типа деплоим'"
 //            sh "docker-compose -p reportportal5 -f $COMPOSE_FILE_RP_5 up -d --force-recreate api"
         }
     }
