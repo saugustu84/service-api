@@ -136,7 +136,7 @@ test {
     }
 }
 
-addDockerfileToGit.dependsOn releaseDockerfile
+addDockerfileToGit.dependsOn createDockerfile
 updateVersion.dependsOn removeDockerfileFromGit
 beforeReleaseBuild.dependsOn addDockerfileToGit
 afterReleaseBuild.dependsOn bintrayUpload
