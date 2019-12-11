@@ -124,7 +124,7 @@ podTemplate(
                 dir("$k8sDir/reportportal/v5") {
                     sh 'helm dependency update'
                 }
-                sh "helm upgrade -n reportportal --reuse-values --set serviceapi.repository=$srvRepo --set serviceapi.tag=$srvVersion --wait -f ./$ciDir/rp/values-ci.yml reportportal ./$k8sDir/reportportal/v5"
+                sh "helm upgrade -n reportportal --reuse-values --set serviceapi.repository=$srvRepo --set serviceapi.tag=$srvVersion --wait reportportal ./$k8sDir/reportportal/v5"
             }
         }
 
@@ -150,7 +150,7 @@ podTemplate(
                         echo "Running RP integration tests on env: ${testEnv}"
                         writeFile(file: 'buildsession.txt', text: sealightsSession, encoding: "UTF-8")
                         writeFile(file: 'sl-token.txt', text: sealightsToken, encoding: "UTF-8")
-                        sh "echo 'rp.tags=v5;'${testEnv} >> src/test/resources/reportportal.properties"
+                        sh "echo 'rp.attributes=v5:${testEnv};' >> src/test/resources/reportportal.properties"
                         sh "mvn clean test -P build -Denv=${testEnv}"
                     }
                 }
