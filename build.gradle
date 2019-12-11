@@ -118,11 +118,8 @@ dependencyCheck {
 //    cveValidForHours = 1
 }
 
-bootJar {
-    releaseMode ? archiveClassifier.set('exec') : archiveFileName.set("${getArchiveBaseName().get()}.${getArchiveExtension().get()}")
-}
+bootJar.archiveClassifier.set('exec')
 jar.enabled(true)
-
 
 test {
     useJUnitPlatform()
