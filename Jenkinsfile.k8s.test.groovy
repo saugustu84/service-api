@@ -111,9 +111,9 @@ podTemplate(
 
         stage('Build Docker Image') {
             dir(appDir) {
-                sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                sh "./gradlew build -P sealightsToken=$sealightsToken sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                sh "./gradlew createDockerfileDev sealightsToken=$sealightsToken sealightsSession=$sealightsSession"
+                sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
+                sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
+                sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
                 sh "./gradlew buildDocker -P dockerTag $tag"
                 container('docker') {
                     sh "docker rmi $tag"
