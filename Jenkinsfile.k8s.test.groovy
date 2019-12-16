@@ -54,7 +54,7 @@ podTemplate(
                 sh 'mkdir -p ~/.ssh'
                 sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
                 sh 'ssh-keyscan -t rsa git.epam.com >> ~/.ssh/known_hosts'
-                sh 'apk add --no-cache ca-certificates font-noto'
+                sh 'sudo apk add --no-cache ca-certificates font-noto'
                 dir(k8sDir) {
                     git branch: "master", url: 'https://github.com/reportportal/kubernetes.git'
 
