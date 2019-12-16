@@ -116,7 +116,7 @@ podTemplate(
                 sh "./gradlew createDockerfileDev sealightsToken=$sealightsToken sealightsSession=$sealightsSession"
                 sh "./gradlew buildDocker -P dockerTag $tag"
                 container('docker') {
-                    sh "docker push $tag"
+                    sh "docker rmi $tag"
                 }
             }
 
