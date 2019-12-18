@@ -112,7 +112,7 @@ podTemplate(
         stage('Build Docker Image') {
             dir(appDir) {
                 container('jre') {
-                    sh 'sudo apk add --no-cache ca-certificates font-noto'
+                    sh 'apk add --no-cache ca-certificates font-noto'
                     sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
                     sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
                     sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
