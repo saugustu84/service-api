@@ -54,7 +54,6 @@ podTemplate(
                 sh 'mkdir -p ~/.ssh'
                 sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
                 sh 'ssh-keyscan -t rsa git.epam.com >> ~/.ssh/known_hosts'
-                sh 'sudo apk add --no-cache ca-certificates font-noto'
                 dir(k8sDir) {
                     git branch: "master", url: 'https://github.com/reportportal/kubernetes.git'
 
@@ -112,10 +111,13 @@ podTemplate(
 
         stage('Build Docker Image') {
             dir(appDir) {
-                sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
-                sh "./gradlew buildDocker -P dockerTag $tag"
+                container('jre') {
+                    sh 'sudo apk add --no-cache ca-certificates font-noto'
+                    sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
+                    sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
+                    sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
+                    sh "./gradlew buildDocker -P dockerTag $tag"
+                }
                 container('docker') {
                     sh "docker rmi $tag"
                 }
