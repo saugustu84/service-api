@@ -22,7 +22,7 @@ podTemplate(
                         resourceLimitCpu: '2000m',
                         resourceRequestMemory: '1024Mi',
                         resourceLimitMemory: '3072Mi'),
-                containerTemplate(name: 'jre', image: 'openjdk:8-jre-alpine', command: 'cat', ttyEnabled: true)
+                containerTemplate(name: 'jdk', image: 'openjdk:8-jdk-alpine', command: 'cat', ttyEnabled: true)
         ],
         imagePullSecrets: ["regcred"],
         volumes: [
@@ -102,7 +102,7 @@ podTemplate(
         def sealightsSession;
         stage('Init Sealights') {
             dir(sealightsDir) {
-                container('jre') {
+                container('jdk') {
                     sh "java -jar sl-build-scanner.jar -config -tokenfile $sealightsTokenPath -appname service-api -branchname $branchToBuild -buildname $srvVersion -pi '*com.epam.ta.reportportal.*'"
                     sealightsSession = utils.execStdout("cat buildSessionId.txt")
                 }
@@ -111,7 +111,7 @@ podTemplate(
 
         stage('Build Docker Image') {
             dir(appDir) {
-                container('jre') {
+                container('jdk') {
                     sh 'apk add --no-cache ca-certificates font-noto'
                     sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
                     sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
