@@ -109,25 +109,32 @@ podTemplate(
             }
         }
 
-        stage('Build Docker Image') {
-            dir(appDir) {
-                container('jdk') {
-                    sh 'apk add --no-cache ca-certificates font-noto'
-                    sh 'addgroup -S -g 1000 builder && adduser -D -S -G builder -u 1000 -s /bin/ash builder'
-                    sh "chown -R builder ."
-                    sh 'su -l builder'
+        try {
+            stage('Build Docker Image') {
+                dir(appDir) {
+                    container('jdk') {
+                        def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
 
-                    sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                    sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-                    sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
-                    sh "./gradlew buildDocker -P dockerTag $tag"
-                }
-                container('docker') {
-                    sh "docker rmi $tag"
+                        sh 'apk add --no-cache ca-certificates font-noto'
+                        sh 'addgroup -S -g 1000 builder && adduser -D -S -G builder -u 1000 -s /bin/ash builder'
+                        sh "chown -R builder ."
+                        sh 'su -l builder'
+
+                        sh "./gradlew test --full-stacktrace $buildParams"
+                        sh "./gradlew build $buildParams"
+                        sh "./gradlew createDockerfileDev $buildParams"
+                        sh "./gradlew buildDocker -P dockerTag $tag"
+                    }
+                    container('docker') {
+                        sh "docker rmi $tag"
+                    }
                 }
             }
-
-
+        }
+        finally {
+            dir(appDir) {
+                junit 'build/reports/tests/test/classes/com.epam.ta.reportportal.ws.controller.LaunchControllerTest.html'
+            }
         }
 //        stage('Deploy to Dev Environment') {
 //            container('helm') {
