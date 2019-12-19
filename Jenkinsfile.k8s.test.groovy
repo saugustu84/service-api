@@ -118,10 +118,8 @@ podTemplate(
                         sh 'apk add --no-cache ca-certificates font-noto'
                         sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
                         sh "chown -R postgres ."
-                        sh 'su -l postgres'
-                        sh 'whoami'
 
-                        sh "./gradlew test --full-stacktrace $buildParams"
+                        sh "su - postgres -c 'cd /service-api && ./gradlew test --full-stacktrace $buildParams'"
                         sh "./gradlew build $buildParams"
                         sh "./gradlew createDockerfileDev $buildParams"
                         sh "./gradlew buildDocker -P dockerTag $tag"
@@ -135,7 +133,6 @@ podTemplate(
         finally {
             dir(appDir) {
                 junit 'build/test-results/test/*.xml'
-                sh 'cd /tmp/embedded-pg/PG-b9dc62590713a660f9ca21660b53c65c/bin && ls -lh'
             }
         }
 //        stage('Deploy to Dev Environment') {
