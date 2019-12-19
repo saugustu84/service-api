@@ -133,7 +133,7 @@ podTemplate(
         }
         finally {
             dir(appDir) {
-                junit 'build/reports/tests/test/classes/com.epam.ta.reportportal.ws.controller.LaunchControllerTest.html'
+                junit 'build/test-results/test/*.xml'
             }
         }
 //        stage('Deploy to Dev Environment') {
