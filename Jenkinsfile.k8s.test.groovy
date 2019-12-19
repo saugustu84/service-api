@@ -119,6 +119,7 @@ podTemplate(
                         sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
                         sh 'chown -R postgres .'
                         sh 'pwd'
+                        sh "echo $WORKSPACE"
 
                         sh "su - postgres -c 'cd / && ls && ./gradlew test --full-stacktrace $buildParams'"
                         sh "./gradlew build $buildParams"
