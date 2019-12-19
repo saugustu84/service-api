@@ -113,6 +113,8 @@ podTemplate(
             dir(appDir) {
                 container('jdk') {
                     sh 'apk add --no-cache ca-certificates font-noto'
+                    sh 'cu -l nobody'
+                    sh 'whoami'
                     sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
                     sh "./gradlew build -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
                     sh "./gradlew createDockerfileDev -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession"
