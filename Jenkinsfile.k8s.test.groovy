@@ -112,17 +112,18 @@ podTemplate(
         try {
             stage('Build Docker Image') {
                 dir(appDir) {
-                    sh 'uname -a'
-                    sh 'java -version'
-                    container('jdk') {
-                        def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
-
-                        sh 'apk add --no-cache ca-certificates font-noto'
-                        sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
-                        sh 'chown -R postgres .'
-                        sh "su - postgres -c 'cd $WORKSPACE/$appDir && ./gradlew createDockerfileDev $buildParams'"
-                    }
+//                    sh 'uname -a'
+//                    sh 'java -version'
+//                    container('jdk') {
+//                        def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
+//
+//                        sh 'apk add --no-cache ca-certificates font-noto'
+//                        sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
+//                        sh 'chown -R postgres .'
+//                        sh "su - postgres -c 'cd $WORKSPACE/$appDir && ./gradlew createDockerfileDev $buildParams'"
+//                    }
                     container('docker') {
+                        sh 'java -version'
                         sh "cd ./build/libs"
                         sh "docker build -t $tag ."
                         sh "docker rmi $tag"
