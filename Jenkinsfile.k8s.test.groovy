@@ -133,6 +133,7 @@ podTemplate(
         }
         finally {
             dir(appDir) {
+                sh 'cd /tmp/embedded-pg/PG-b9dc62590713a660f9ca21660b53c65c/bin && ls -lh'
                 junit 'build/test-results/test/*.xml'
             }
         }
