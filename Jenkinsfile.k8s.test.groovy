@@ -116,9 +116,10 @@ podTemplate(
                         def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
 
                         sh 'apk add --no-cache ca-certificates font-noto'
-                        sh 'addgroup -S -g 1000 builder && adduser -D -S -G builder -u 1000 -s /bin/ash builder'
-                        sh "chown -R builder ."
-                        sh 'su -l builder'
+                        sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
+                        sh "chown -R postgres ."
+                        sh 'su -l postgres'
+                        sh 'whoami'
 
                         sh "./gradlew test --full-stacktrace $buildParams"
                         sh "./gradlew build $buildParams"
@@ -133,8 +134,8 @@ podTemplate(
         }
         finally {
             dir(appDir) {
-                sh 'cd /tmp/embedded-pg/PG-b9dc62590713a660f9ca21660b53c65c/bin && ls -lh'
                 junit 'build/test-results/test/*.xml'
+                sh 'cd /tmp/embedded-pg/PG-b9dc62590713a660f9ca21660b53c65c/bin && ls -lh'
             }
         }
 //        stage('Deploy to Dev Environment') {
