@@ -118,6 +118,7 @@ podTemplate(
                         sh 'apk add --no-cache ca-certificates font-noto'
                         sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
                         sh 'chown -R postgres .'
+                        sh 'pwd'
 
                         sh "su - postgres -c 'cd / && ls && ./gradlew test --full-stacktrace $buildParams'"
                         sh "./gradlew build $buildParams"
