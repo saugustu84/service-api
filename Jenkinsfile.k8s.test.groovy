@@ -114,7 +114,7 @@ podTemplate(
                 container('jdk') {
                     sh 'apk add --no-cache ca-certificates font-noto'
                     sh 'addgroup -S -g 1000 builder && adduser -D -S -G builder -u 1000 -s /bin/ash builder'
-                    sh "chown -R builder /$appDir"
+                    sh "chown -R builder ."
                     sh 'su -l builder'
 
                     sh "./gradlew test --full-stacktrace -P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
