@@ -47,7 +47,7 @@ podTemplate(
         def k8sNs = "reportportal"
         def sealightsDir = 'sealights'
 
-        def branchToBuild = params.get('COMMIT_HASH', 'develop')
+        def branchToBuild = params.get('COMMIT_HASH', 'docker-image-travis')
 
         parallel 'Checkout Infra': {
             stage('Checkout Infra') {
@@ -119,7 +119,7 @@ podTemplate(
                         sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
                         sh "chown -R postgres ."
 
-                        sh "su - postgres -c 'cd /app && ./gradlew test --full-stacktrace $buildParams'"
+                        sh "su - postgres -c 'cd / && ./gradlew test --full-stacktrace $buildParams'"
                         sh "./gradlew build $buildParams"
                         sh "./gradlew createDockerfileDev $buildParams"
                         sh "./gradlew buildDocker -P dockerTag $tag"
