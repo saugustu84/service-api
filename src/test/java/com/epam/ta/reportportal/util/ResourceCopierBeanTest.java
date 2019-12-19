@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ResourceCopierBeanTest {
 	private static final String RANDOM_NAME = RandomStringUtils.randomAlphabetic(5);
 
-	private static final String RESOURCE_TO_BE_COPIED = "classpath:logback-test.xml";
+	private static final String RESOURCE_TO_BE_COPIED = "classpath:application-unittest.yaml";
 
 	@Autowired
 	private ResourceLoader resourceLoader;
