@@ -113,7 +113,7 @@ podTemplate(
             stage('Build Docker Image') {
                 dir(appDir) {
                     container('jdk') {
-                        def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion -P dockerTag $tag"
+                        def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion -P dockerTag=$tag"
 
                         sh 'apk add --no-cache ca-certificates font-noto'
                         sh 'mkdir /var/lib/postgresql && chown -R postgres /var/lib/postgresql'
