@@ -112,7 +112,7 @@ podTemplate(
         try {
             stage('Build Docker Image') {
                 dir(appDir) {
-                    sh 'unae -a'
+                    sh 'uname -a'
                     sh 'java -version'
                     container('jdk') {
                         def buildParams = "-P sealightsToken=$sealightsToken -P sealightsSession=$sealightsSession -P buildNumber=$buildVersion"
