@@ -37,8 +37,8 @@ import org.owasp.dependencycheck.reporting.ReportGenerator
 apply from: 'project-properties.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-docker.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-commons.gradle'
-apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-info.gradle'
-apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/release-service.gradle'
+apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/test1/build-info.gradle'
+apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/test1/release-service.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/copy-database-scripts.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/build-quality.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/master/jacoco.gradle'
@@ -125,6 +125,12 @@ bootJar {
 
 jar {
     enabled = true
+}
+
+release {
+    git {
+        requireBranch = 'test-release'
+    }
 }
 
 test {
