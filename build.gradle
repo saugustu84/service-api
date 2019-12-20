@@ -123,6 +123,7 @@ bootJar.archiveClassifier.set('exec')
 jar.enabled(true)
 
 test {
+    systemProperties 'java.awt.headless': 'true'
     useJUnitPlatform()
     maxParallelForks = 1
     testLogging {
