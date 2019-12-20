@@ -20,11 +20,11 @@
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
               name="test" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="7a5c9b49-9dc5-422a-ac69-e92cf61ef530" isIgnorePagination="true">
-    <style name="Title" forecolor="#FFFFFF" fontName="Noto Sans" fontSize="50" isBold="false"/>
-    <style name="SubTitle" forecolor="#CCCCCC" fontName="Noto Sans" fontSize="18" isBold="false"/>
-    <style name="Column header" forecolor="#666666" fontName="Noto Sans" fontSize="14" isBold="true"/>
-    <style name="Detail" mode="Transparent" fontName="Noto Sans"/>
-    <style name="Row" mode="Transparent" fontName="Noto Sans" pdfFontName="Times-Roman">
+    <style name="Title" forecolor="#FFFFFF" fontName="DejaVu Sans" fontSize="50" isBold="false"/>
+    <style name="SubTitle" forecolor="#CCCCCC" fontName="DejaVu Sans" fontSize="18" isBold="false"/>
+    <style name="Column header" forecolor="#666666" fontName="DejaVu Sans" fontSize="14" isBold="true"/>
+    <style name="Detail" mode="Transparent" fontName="DejaVu Sans"/>
+    <style name="Row" mode="Transparent" fontName="DejaVu Sans" pdfFontName="Times-Roman">
         <conditionalStyle>
             <conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
             <style mode="Opaque" backcolor="#F0EFEF"/>
