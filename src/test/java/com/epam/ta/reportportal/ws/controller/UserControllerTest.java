@@ -340,6 +340,6 @@ class UserControllerTest extends BaseMvcTest {
 
 	@Test
 	void exportUsers() throws Exception {
-		mockMvc.perform(get("/v1/user/export").with(token(oAuthHelper.getSuperadminToken()))).andExpect(status().isOk());
+		mockMvc.perform(get("/v1/user/export?view=csv").with(token(oAuthHelper.getSuperadminToken()))).andExpect(status().isOk());
 	}
 }

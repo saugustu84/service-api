@@ -339,7 +339,7 @@ class ProjectControllerTest extends BaseMvcTest {
 
 	@Test
 	void export() throws Exception {
-		final ResultActions resultActions = mockMvc.perform(get("/v1/project/export").with(token(oAuthHelper.getSuperadminToken())));
+		final ResultActions resultActions = mockMvc.perform(get("/v1/project/export?view=csv").with(token(oAuthHelper.getSuperadminToken())));
 		resultActions.andExpect(status().isOk());
 		assertEquals("text/csv", resultActions.andReturn().getResponse().getContentType());
 	}

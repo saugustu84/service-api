@@ -265,7 +265,7 @@ class LaunchControllerTest extends BaseMvcTest {
 
 	@Test
 	void export() throws Exception {
-		mockMvc.perform(get(DEFAULT_PROJECT_BASE_URL + "/launch/1/report").with(token(oAuthHelper.getDefaultToken())))
+		mockMvc.perform(get(DEFAULT_PROJECT_BASE_URL + "/launch/1/report?view=xls").with(token(oAuthHelper.getDefaultToken())))
 				.andExpect(status().isOk());
 	}
 
