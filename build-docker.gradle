@@ -1,0 +1,125 @@
+/*
+ * Copyright 2019 EPAM Systems
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:6.0.0'
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+docker {
+    url.set(dockerServerUrl)
+    registryCredentials {
+        if (project.hasProperty('dockerRegistryUrl')) {
+            url = dockerRegistryUrl
+        }
+        if (project.hasProperty('dockerRegistryUser')) {
+            username = dockerRegistryUser
+        }
+        if (project.hasProperty('dockerRegistryPass')) {
+            password = dockerRegistryPass
+        }
+    }
+}
+
+def isRelease = project.hasProperty('registryRelease')
+def devPostfix = isRelease ? '' : '-dev-5'
+def imageVersion = isRelease ? "$version" : 'latest'
+def dockerProjectName = "reportportal${devPostfix}/${project.name}".toLowerCase()
+def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
+
+task createDockerfileDev(type: Dockerfile) {
+    group = 'docker'
+    dependsOn build
+    def artifact = "$project.name-$project.version-exec.jar"
+    destFile.set(file("${project.buildDir}${File.separator}${project.libsDirName}${File.separator}Dockerfile"))
+
+    from('openjdk:8-jre-alpine')
+    label(['version'           : "$project.version",
+           'description'       : "$project.description",
+           'maintainer'        : "$maintainer",
+           'quay.expires-after': '1w']
+    )
+    if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
+        runCommand(dockerPrepareEnvironment)
+    }
+    if (project.hasProperty('sealightsSession')) {
+        runCommand('apk add curl unzip && \\\n' +
+                '\tmkdir /plugins && \\\n' +
+                '\tcurl -o /plugins/sealights.zip https://agents.sealights.co/sealights-java/sealights-java-latest.zip && \\\n' +
+                '\tunzip /plugins/sealights.zip -d /plugins && \\\n' +
+                "\techo '${sealightsToken}' > /sealights-token.txt && \\\n" +
+                "\techo '${sealightsSession}' > /sealights-session.txt")
+    }
+
+    environmentVariable(['JAVA_OPTS': project.hasProperty('dockerJavaOptsDev') ? dockerJavaOptsDev : '', 'ARTIFACT': artifact])
+    volume('/tmp')
+    addFile(artifact, artifact)
+    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
+            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    exposePort(8080)
+    entryPoint('/start.sh')
+}
+
+task createDockerfile(type: Dockerfile) {
+    group = 'docker'
+    dependsOn build
+    def artifact = "$project.name-$project.version-exec.jar"
+    destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
+
+    from('openjdk:8-jre-alpine')
+    label(['version'    : "$project.version",
+           'description': "$project.description",
+           'maintainer' : "$maintainer"]
+    )
+    if (project.hasProperty('dockerPrepareEnvironment') && dockerPrepareEnvironment?.trim()) {
+        runCommand(dockerPrepareEnvironment)
+    }
+    environmentVariable(
+            ['JAVA_OPTS'       : project.hasProperty('dockerJavaOpts') ? dockerJavaOpts : '',
+             'ARTIFACT'        : artifact,
+             'APP_DOWNLOAD_URL': "https://dl.bintray.com/epam/reportportal/com/epam/reportportal/${project.name}/${project.version}/${artifact}"]
+    )
+    runCommand('sh -c "echo $\'#!/bin/sh \\n\\\n' +
+            'exec java $JAVA_OPTS -jar $ARTIFACT\' > /start.sh && chmod +x /start.sh"')
+    volume('/tmp')
+    runCommand('wget $APP_DOWNLOAD_URL')
+    exposePort(8080)
+    entryPoint('/start.sh')
+}
+
+task buildDocker(type: DockerBuildImage) {
+    group = 'docker'
+    releaseMode ? dependsOn(createDockerfile) : dependsOn(createDockerfileDev)
+    inputDir.set(file("${project.buildDir}${File.separator}${libsDirName}"))
+    project.hasProperty('dockerTag') ? images.add(dockerTag) : images.add("${dockerProjectName}:$imageVersion")
+}
+
+task pushDocker(type: DockerPushImage) {
+    group = 'docker'
+    dependsOn buildDocker
+    project.hasProperty('dockerTag') ? images.add(dockerTag) : images.add("${dockerProjectName}:$imageVersion")
+}

@@ -35,7 +35,7 @@ plugins {
 import org.owasp.dependencycheck.reporting.ReportGenerator
 
 apply from: 'project-properties.gradle'
-apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/dockerfile/build-docker.gradle'
+apply from: 'build-docker.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/dockerfile/build-commons.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/dockerfile/build-info.gradle'
 apply from: 'https://raw.githubusercontent.com/reportportal/gradle-scripts/dockerfile/release-service.gradle'
@@ -116,6 +116,13 @@ processResources {
 dependencyCheck {
     formats = [ReportGenerator.Format.HTML, ReportGenerator.Format.XML]
 //    cveValidForHours = 1
+}
+
+release {
+    pushReleaseVersionBranch = 'new-ve'
+    git {
+        requireBranch = 'docker-image-travis'
+    }
 }
 
 bootJar.archiveClassifier.set('exec')
