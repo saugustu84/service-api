@@ -119,9 +119,9 @@ dependencyCheck {
 }
 
 release {
-    pushReleaseVersionBranch = 'new-ver'
+    pushReleaseVersionBranch = 'docker-image-travis'
     git {
-        requireBranch = 'new-ver'
+        requireBranch = 'docker-image-travis'
     }
 }
 
