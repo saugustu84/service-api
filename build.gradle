@@ -55,7 +55,11 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "com.github.reportportal:commons-bom:f060f9c"
+        if (releaseMode) {
+            mavenBom 'com.epam.reportportal:commons-bom:5.0.0-RC-1'
+        } else {
+            mavenBom 'com.github.reportportal:commons-bom:14dab6c'
+        }
     }
 }
 
