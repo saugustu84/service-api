@@ -19,6 +19,7 @@ package com.epam.ta.reportportal.ws.converter.builders;
 import com.epam.ta.reportportal.entity.item.TestItem;
 import com.epam.ta.reportportal.entity.log.Log;
 import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author <a href="mailto:ihar_kahadouski@epam.com">Ihar Kahadouski</a>
  */
+@Disabled
 class LogBuilderTest {
 
 	@Test

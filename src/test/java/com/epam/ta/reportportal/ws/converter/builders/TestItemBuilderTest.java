@@ -28,6 +28,7 @@ import com.epam.ta.reportportal.ws.model.StartTestItemRQ;
 import com.epam.ta.reportportal.ws.model.attribute.ItemAttributeResource;
 import com.epam.ta.reportportal.ws.model.attribute.ItemAttributesRQ;
 import com.google.common.collect.Sets;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author <a href="mailto:ihar_kahadouski@epam.com">Ihar Kahadouski</a>
  */
+@Disabled
 class TestItemBuilderTest {
 
 	@Test
