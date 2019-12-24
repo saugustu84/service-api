@@ -53,7 +53,6 @@ def maintainer = 'Andrei Varabyeu <andrei_varabyeu@epam.com>'
 
 task createDockerfileDev(type: Dockerfile) {
     group = 'docker'
-    dependsOn build
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.buildDir}${File.separator}${project.libsDirName}${File.separator}Dockerfile"))
 
@@ -86,7 +85,6 @@ task createDockerfileDev(type: Dockerfile) {
 
 task createDockerfile(type: Dockerfile) {
     group = 'docker'
-    dependsOn build
     def artifact = "$project.name-$project.version-exec.jar"
     destFile.set(file("${project.projectDir}${File.separator}Dockerfile"))
 
