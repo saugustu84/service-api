@@ -141,13 +141,6 @@ release {
     }
 }
 
-bintray {
-    pkg {
-        userOrg = 'z1max'
-    }
-}
-
-
 processResources.dependsOn gitInfo
 prepareDockerfile.dependsOn build
 buildDocker.dependsOn prepareDockerfile
