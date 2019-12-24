@@ -136,6 +136,9 @@ test {
 
 release {
     pushReleaseVersionBranch = 'fix/release-version'
+    git {
+        requireBranch = 'fix/release-version'
+    }
 }
 
 
